@@ -4,7 +4,7 @@
     <title>Jerad King TAMU WebMap</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script type="text/javascript" src="https://github.tamu.edu/TAMU-GEOG-678-WebGIS/Content/blob/master/labs/tamubuildings.js"></script>
+<script type="text/javascript" src="https://raw.githubusercontent.com/JeradKingTAMU/GEOG-JeradKing-GEOG678/main/Lab_6/tamu.js"></script>
 
     <style>
         body {
@@ -39,9 +39,8 @@ info.onAdd = function (map) {
     return this._div;
 };
 
-const geojson = L.geoJson(tamubuildings, {
-		style,
-		onEachFeature
+const geojson = L.geoJson(tamu, {
+
 	}).addTo(map);
 
 
