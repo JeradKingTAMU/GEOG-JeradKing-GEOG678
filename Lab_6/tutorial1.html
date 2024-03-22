@@ -34,12 +34,7 @@ const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-const baseballIcon = L.icon({
-    iconUrl: 'baseball-marker.png',
-    iconSize: [32, 37],
-    iconAnchor: [16, 37],
-    popupAnchor: [0, -28]
-});
+
 
 function onEachFeature(feature, layer) {
     let popupContent = `<p>I started out as a GeoJSON ${feature.geometry.type}, but now I'm a Leaflet vector!</p>`;
@@ -51,49 +46,48 @@ function onEachFeature(feature, layer) {
     layer.bindPopup(popupContent);
 }
 
-/* global campus, bicycleRental, freeBus, coorsField */
-const bicycleRentalLayer = L.geoJSON([bicycleRental, campus], {
-
-    style(feature) {
-        return feature.properties && feature.properties.style;
+var someFeatures = [{
+    "type": "Feature",
+    "properties": {
+        "name": "Coors Field",
+        "show_on_map": true
     },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [-104.99404, 39.75621]
+    }
+}, {
+    "type": "Feature",
+    "properties": {
+        "name": "Busch Field",
+        "show_on_map": false
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [-104.98404, 39.74621]
+    }
+}];
 
-    onEachFeature,
-
-    pointToLayer(feature, latlng) {
-        return L.circleMarker(latlng, {
-            radius: 8,
-            fillColor: '#ff7800',
-            color: '#000',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
-        });
+L.geoJSON(someFeatures, {
+    filter: function(feature, layer) {
+        return feature.properties.show_on_map;
     }
 }).addTo(map);
 
-const freeBusLayer = L.geoJSON(freeBus, {
+var geojsonMarkerOptions = {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
 
-    filter(feature, layer) {
-        if (feature.properties) {
-            // If the property "underConstruction" exists and is true, return false (don't render features under construction)
-            return feature.properties.underConstruction !== undefined ? !feature.properties.underConstruction : true;
-        }
-        return false;
-    },
-
-    onEachFeature
+L.geoJSON(someFeatures, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    }
 }).addTo(map);
-
-const coorsLayer = L.geoJSON(coorsField, {
-
-    pointToLayer(feature, latlng) {
-        return L.marker(latlng, {icon: baseballIcon});
-    },
-
-    onEachFeature
-}).addTo(map);
-
 </script>
 
 </body>

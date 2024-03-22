@@ -4,7 +4,8 @@
     <title>Jerad King TAMU WebMap</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/JeradKingTAMU/GEOG-JeradKing-GEOG678/main/Lab_6/tamu.js"></script>
+    <script type='text/javascript' src='C:\Users\jerad_kpmetvk\Desktop\WebGIS_Labs\GEOG-JeradKing-GEOG678\Lab_6\tamu.js'></script>
+
 
     <style>
         body {
@@ -15,6 +16,8 @@
             height: 100%;
             width: 100vw;
         }
+        .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
+        .highlight { color: rgb(191, 160, 160); } 
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
@@ -22,28 +25,68 @@
 
 <div id="map"></div>
 
-<script>
+<script type = "text/javascript">
 var map = L.map('map').setView([30.609830, -96.340356], 11);
-
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 17
 }).addTo(map);
 
+function highlightFeature(e) {
+    var layer = e.target;
+    layer.setStyle({
+        weight: 5,
+        color: '#660000', 
+        fillColor: '#800000', 
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    info.update(layer.feature.properties);
+}
+
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+    info.update();
+}
+
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+    if (feature.properties && feature.properties.BldgName) {
+        layer.bindPopup(feature.properties.BldgName);
+    }
+}
+
+const geojson = L.geoJson(tamu, {
+    style: function(feature) {
+        return { color: '#660000', fillColor: '#800000' }; 
+    },
+    onEachFeature: onEachFeature
+}).addTo(map);
+
 const info = L.control();
 
 info.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'info');
+    this._div = L.DomUtil.create('div', 'info'); 
     this.update();
     return this._div;
 };
 
+info.update = function (props) {
+    this._div.innerHTML = '<h4>Structure Details</h4>' +  (props ?
+        '<b>' + props.BldgName + '</b><br />' + props.BldgAbbr : '');
+};
 
-const geojson = L.geoJson(tamu, {
-
-	}).addTo(map);
-
+info.addTo(map);
 
 </script>
 </body>
