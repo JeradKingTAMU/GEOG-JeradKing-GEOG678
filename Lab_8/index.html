@@ -49,7 +49,6 @@
           url: "https://services1.arcgis.com/qr14biwnHA6Vis6l/arcgis/rest/services/shapelab8/FeatureServer"
         });
 
-        // Define the popup template
         var popupTemplate = {
           title: "{Office Location}",
           content: [
@@ -67,10 +66,8 @@
           ]
         };
 
-        // Set the popup template for the feature layer
         featureLayer.popupTemplate = popupTemplate;
 
-        // Add the feature layer to the map
         map.add(featureLayer);
       });
   </script>
